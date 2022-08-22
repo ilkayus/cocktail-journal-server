@@ -13,7 +13,7 @@ exports.getTrio = async (req, res, next) => {
 };
 
 exports.getByName = async (req, res, next) => {
-  if (req.params.searchText.includes("-"))
+  if (req.params.searchText.includes("+"))
     req.params.searchText = req.params.searchText.replace("+", "/");
   const cocks = await Cocktail.find({
     [req.params.category]: { $regex: req.params.searchText, $options: "i" },
