@@ -13,10 +13,13 @@ dotenv.config({ path: "./config.env" });
 const app = require("./app");
 
 mongoose
-  .connect(process.env.cocktailDB_CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://ilkayus:WQ6Yiz5mJtTFFv8s@cluster0.24ou6.mongodb.net/cocktaildb?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     // console.log(con.connections);
     console.log("Cocktail DB connection successful...");
