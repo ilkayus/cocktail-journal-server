@@ -4,6 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cocktailsRouter = require("./routes/cocktailsRoutes");
+const userRouter = require("./routes/userRoutes");
 
 const app = express();
 
@@ -27,10 +28,12 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/v1", cocktailsRouter);
+app.use("/api/v1/users", userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  // next(createError(404));
+  next();
 });
 
 // error handler
@@ -41,7 +44,8 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  //res.render("error");
+  next(err);
 });
 
 module.exports = app;
