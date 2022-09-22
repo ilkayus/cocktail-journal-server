@@ -39,7 +39,9 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
-    user,
+    email: user.email,
+    username: user.username,
+    photo: user.photo,
   });
 };
 
@@ -61,5 +63,8 @@ exports.signIn = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     token,
+    email: user.email,
+    username: user.username,
+    photo: user.photo,
   });
 });
