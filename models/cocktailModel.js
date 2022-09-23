@@ -19,6 +19,10 @@ const cocktailSchema = new mongoose.Schema(
     strIBA: { type: String },
     strImageAttribution: { type: String },
     strCreativeCommonsConfirmed: { type: String },
+    timesfavorite: { type: Number, default: 0 },
+    timesCommented: { type: Number, default: 0 },
+    favorites: { type: [String] },
+    comments: { type: [String] },
     dateModified: { type: String },
   },
   {

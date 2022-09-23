@@ -1,8 +1,16 @@
 const mongoose = require("mongoose");
 const Cocktail = require("../models/cocktailModel");
 
+// const addUserInfo = (req) => ({
+//   $addFields: {
+//     isfavorite: { favorites: { $eq: req.user._id } },
+//   },
+// });
+
 exports.getTrio = async (req, res, next) => {
-  const cocks = await Cocktail.aggregate([{ $sample: { size: 6 } }]);
+  let query = [{ $sample: { size: 6 } }];
+  // if (req.user) query.push(addUserInfo(req));
+  const cocks = await Cocktail.aggregate(query);
   const cocksIDs = cocks.map((el) => el.drinkID);
   console.log(cocksIDs);
   res.status(200).json({
@@ -51,8 +59,9 @@ exports.getSearchResults = async (req, res, next) => {
         $match: { ingredients: item },
       });
     });
-    console.log(query);
   }
+  // if (req.user) query.push(addUserInfo(req));
+  // console.log(req.user, query);
   const cocks = await Cocktail.aggregate(query);
   const cocksIDs = cocks.map((el) => el.drinkID);
   console.log(cocksIDs);

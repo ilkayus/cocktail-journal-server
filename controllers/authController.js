@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const User = require("../models/userModal");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
@@ -39,6 +40,7 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
+    _id: user._id,
     email: user.email,
     username: user.username,
     photo: user.photo,
@@ -63,8 +65,56 @@ exports.signIn = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     token,
+    _id: user._id,
     email: user.email,
     username: user.username,
     photo: user.photo,
   });
+});
+
+exports.hasUser = catchAsync(async (req, res, next) => {
+  // console.log(req.body, req.headers.authorization);
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const currentUser = await User.findById(decoded.id);
+    req.user = currentUser;
+  } else req.user = undefined;
+  next();
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1- Getting token and check if it's exists
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(
+      new AppError("You are not logged in! Please log in to get access.", 401)
+    );
+  }
+  // 2- Verification token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // 3- Check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new AppError("User is no longer exists", 401));
+  }
+  // 4- Chec k if user changed password after the JWT tooken was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError("User recently changed password! Please log in again.!", 401)
+    );
+  }
+  // Grant access to protected route.
+  req.user = currentUser;
+  next();
 });
