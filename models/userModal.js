@@ -32,9 +32,12 @@ const userSchema = new mongoose.Schema({
       message: "Passwords are not the same",
     },
   },
-  favorites: {
-    type: [String],
-  },
+  favorites: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Cocktail",
+    },
+  ],
   comments: {
     type: [String],
   },

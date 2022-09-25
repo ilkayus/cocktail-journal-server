@@ -22,7 +22,7 @@ router
     userController.addFavs
   );
 router
-  .route("/removefavs")
+  .route("/removefavs/:id")
   .patch(
     authController.hasUser,
     actionController.removeFavs,

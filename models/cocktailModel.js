@@ -21,7 +21,7 @@ const cocktailSchema = new mongoose.Schema(
     strCreativeCommonsConfirmed: { type: String },
     timesfavorite: { type: Number, default: 0 },
     timesCommented: { type: Number, default: 0 },
-    favorites: { type: [String] },
+    favorites: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     comments: { type: [String] },
     dateModified: { type: String },
   },
