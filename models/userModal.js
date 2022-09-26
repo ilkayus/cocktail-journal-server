@@ -38,9 +38,12 @@ const userSchema = new mongoose.Schema({
       ref: "Cocktail",
     },
   ],
-  comments: {
-    type: [String],
-  },
+  comments: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Comment",
+    },
+  ],
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

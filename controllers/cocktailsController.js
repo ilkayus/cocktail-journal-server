@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Cocktail = require("../models/cocktailModel");
 const User = require("../models/userModal");
+const Comment = require("../models/commentModel");
 
 // const addUserInfo = (req) => ({
 //   $addFields: {
@@ -88,5 +89,22 @@ exports.getUserFavorites = async (req, res, next) => {
     status: "success",
     results: cocks.length,
     data: { cocks },
+  });
+};
+
+exports.getCocktailComments = async (req, res, next) => {
+  const cockId = mongoose.Types.ObjectId(req.params.id);
+  const query = [
+    {
+      $match: { cocktailId: cockId },
+    },
+    {
+      $sort: { _id: -1 },
+    },
+  ];
+  const coms = await Comment.aggregate(query);
+  res.status(200).json({
+    status: "success",
+    data: { coms },
   });
 };

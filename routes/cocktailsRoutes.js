@@ -8,14 +8,17 @@ const router = express.Router();
 /* GET home page. */
 router.route("/").get(authController.hasUser, cocktailController.getTrio);
 router
-  .route("/:category/:searchText")
-  .get(authController.hasUser, cocktailController.getByName);
-router
   .route("/search/:type/:category/:ingredients")
   .get(authController.hasUser, cocktailController.getSearchResults);
 router
   .route("/favorites")
   .get(authController.hasUser, cocktailController.getUserFavorites);
+router
+  .route("/comments/:id")
+  .get(authController.hasUser, cocktailController.getCocktailComments);
+router
+  .route("/:category/:searchText")
+  .get(authController.hasUser, cocktailController.getByName);
 router
   .route("/addfavs/:id")
   .patch(
@@ -31,15 +34,15 @@ router
     userController.removeFavs
   );
 router
-  .route("/addcomment")
-  .patch(
+  .route("/addcomment/:id")
+  .post(
     authController.hasUser,
     actionController.addComment,
     userController.addComment
   );
 router
-  .route("/removecomment")
-  .patch(
+  .route("/removecomment/:id")
+  .post(
     authController.hasUser,
     actionController.removeComment,
     userController.removeComment
