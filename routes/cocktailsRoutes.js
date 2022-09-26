@@ -13,7 +13,9 @@ router
 router
   .route("/search/:type/:category/:ingredients")
   .get(authController.hasUser, cocktailController.getSearchResults);
-
+router
+  .route("/favorites")
+  .get(authController.hasUser, cocktailController.getUserFavorites);
 router
   .route("/addfavs/:id")
   .patch(

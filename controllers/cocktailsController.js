@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Cocktail = require("../models/cocktailModel");
+const User = require("../models/userModal");
 
 // const addUserInfo = (req) => ({
 //   $addFields: {
@@ -63,6 +64,24 @@ exports.getSearchResults = async (req, res, next) => {
   // if (req.user) query.push(addUserInfo(req));
   // console.log(req.user, query);
   const cocks = await Cocktail.aggregate(query);
+  const cocksIDs = cocks.map((el) => el.drinkID);
+  console.log(cocksIDs);
+  res.status(200).json({
+    status: "success",
+    results: cocks.length,
+    data: { cocks },
+  });
+};
+
+exports.getUserFavorites = async (req, res, next) => {
+  // console.log(req.user);
+  const userCocks = await User.find(
+    { _id: req.user._id },
+    { _id: 0, favorites: 1 }
+  );
+  let favs = userCocks[0].favorites;
+  const cocks = await Cocktail.find({ _id: { $in: favs } });
+  // console.log("cock:", cocks);
   const cocksIDs = cocks.map((el) => el.drinkID);
   console.log(cocksIDs);
   res.status(200).json({
