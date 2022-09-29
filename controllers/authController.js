@@ -4,6 +4,7 @@ const { promisify } = require("util");
 const User = require("../models/userModal");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const dotenv = require("dotenv");
 const sendEmail = require("../utils/email");
 
 exports.signUp = catchAsync(async (req, res, next) => {
@@ -117,4 +118,11 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Grant access to protected route.
   req.user = currentUser;
   next();
+});
+
+exports.googleOAuth = catchAsync(async (req, res, next) => {
+  res.status(200).json({
+    status: "success",
+    clientId: process.env.OauthClientID,
+  });
 });

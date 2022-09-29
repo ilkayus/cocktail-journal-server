@@ -27,8 +27,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/v1", cocktailsRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1", cocktailsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
