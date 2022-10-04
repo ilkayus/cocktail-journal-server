@@ -7,13 +7,14 @@ const AppError = require("../utils/appError");
 const dotenv = require("dotenv");
 const sendEmail = require("../utils/email");
 
-exports.signUp = catchAsync(async (req, res, next) => {
+const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    photo: req.body.photo,
   });
   createSendToken(newUser, 201, res);
 });
@@ -48,7 +49,14 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-exports.signIn = catchAsync(async (req, res, next) => {
+exports.signInWithGoogleOAuth = catchAsync(async (req, res, next) => {
+  const email = req.body.email;
+  const user = await User.findOne({ email });
+  if (!user) signUp(req, res, next);
+  else signIn(req, res, next);
+});
+
+const signIn = catchAsync(async (req, res, next) => {
   const { password, email } = req.body;
   if (!email || !password) {
     return next(new AppError("Please provide email and password!", 400));
@@ -126,3 +134,6 @@ exports.googleOAuth = catchAsync(async (req, res, next) => {
     clientId: process.env.OauthClientID,
   });
 });
+
+exports.signUp = signUp;
+exports.signIn = signIn;
