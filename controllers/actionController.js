@@ -32,6 +32,7 @@ exports.addComment = catchAsync(async (req, res, next) => {
   console.log(req.body, req.params);
   const newComment = await Comment.create({
     commentText: req.body.data,
+    createDate: req.body.createDate,
     cocktailId: req.params.id,
     userId: req.user._id,
     username: req.user.username,
